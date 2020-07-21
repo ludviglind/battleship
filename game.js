@@ -14,7 +14,7 @@ let view = {
 };
 
 let model = {
-    boardSize: 7,
+    boardSize: 6,
     numShips: 3,
     shipLength: 3,
     shipsSunk: 0,
@@ -48,4 +48,30 @@ let model = {
         }
         return true;
     }
+};
+
+let controller = {
+    guesses: 0,
+    processGuess: function(guess) {
+
+    }
+};
+
+function parseGuess(guess) {
+    const alphabet = ["A", "B", "C", "D", "E", "F", "G"];
+    if (guess === null || guess.length !== 2) {
+        alert("Oops, please enter a letter and a number on the board.");
+    } else {
+        firstChar = guess.charAt(0);
+        let row = alphabet.indexOf(firstChar);
+        let column = guess.charAt(1);
+        if (isNaN(row) || isNaN(column)) {
+            alert("Oops, that isn't on the board.");
+        } else if (row < 0 || row >= model.boardSize) {
+            alert ("Oops, that's off the board.");
+        } else {
+            return row + column;
+        }
+    }
+    return null;
 };
