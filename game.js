@@ -14,7 +14,7 @@ let view = {
 };
 
 let model = {
-    boardSize: 6,
+    boardSize: 7,
     numShips: 3,
     shipLength: 3,
     shipsSunk: 0,
@@ -53,7 +53,14 @@ let model = {
 let controller = {
     guesses: 0,
     processGuess: function(guess) {
-
+        let location = parseGuess(guess);
+        if (location) {
+            this.guesses++;
+            let hit = model.fire(location);
+            if (hit && model.shipsSunk === model.numShips) {
+                view.displayMessage("You sank all my battleships in " + this.guesses + " guesses.");
+            }
+        }
     }
 };
 
@@ -67,7 +74,7 @@ function parseGuess(guess) {
         let column = guess.charAt(1);
         if (isNaN(row) || isNaN(column)) {
             alert("Oops, that isn't on the board.");
-        } else if (row < 0 || row >= model.boardSize) {
+        } else if (row < 0 || column < 0 || row >= model.boardSize || column >= model.boardSize) {
             alert ("Oops, that's off the board.");
         } else {
             return row + column;
@@ -75,3 +82,26 @@ function parseGuess(guess) {
     }
     return null;
 };
+
+function init() {
+    const fireButton = document.getElementById("fireButton");
+    fireButton.onclick = handleFireButton;
+    const guessInput = document.getElementById("guessInput");
+    guessInput.onkeypress = handleKeyPress;
+}
+
+function handleKeyPress(e) {
+    const fireButton = document.getElementById("fireButton");
+    if (e.keyCode === 13) {
+        fireButton.click();
+        return false;
+    }
+}
+
+function handleFireButton() {
+    const guessInput = document.getElementById("guessInput");
+    let guess = guessInput.value;
+    controller.processGuess(guess);
+    guessInput.value = "";
+}
+window.onload = init;
